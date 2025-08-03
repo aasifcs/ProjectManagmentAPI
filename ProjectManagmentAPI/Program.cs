@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models; // <-- Add this
+using Microsoft.OpenApi.Models; 
 using ProjectManagmentAPI.Data;
 using ProjectManagmentAPI.Seed;
 using ProjectManagmentAPI.Services;
@@ -12,10 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// ? Configure Swagger with JWT support
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProjectManagmentAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Project Management API",
+        Version = "v1",
+        Description = "API for managing projects, tasks, and user roles."
+    });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -24,7 +28,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter: **Bearer &lt;your_token_here&gt;**"
+        Description = "Enter 'Bearer' followed by your token in the textbox below."
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -41,7 +45,10 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    c.EnableAnnotations(); 
 });
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -5,6 +5,7 @@ using ProjectManagmentAPI.Data;
 using ProjectManagmentAPI.DTOs;
 using ProjectManagmentAPI.Models;
 using ProjectManagmentAPI.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ProjectManagmentAPI.Controllers
 {
@@ -21,7 +22,11 @@ namespace ProjectManagmentAPI.Controllers
             _jwt = jwt;
         }
 
+        
         [HttpPost("login")]
+        [SwaggerOperation(Summary = "Login user", Description = "Validates user credentials and returns a JWT token.")]
+        [SwaggerResponse(200, "JWT token returned")]
+        [SwaggerResponse(401, "Invalid credentials")]
         public IActionResult Login([FromBody] LoginDto dto)
         {
             var user = _context.Users.SingleOrDefault(u => u.Email == dto.Email);
@@ -34,6 +39,9 @@ namespace ProjectManagmentAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("register")]
+        [SwaggerOperation(Summary = "Register a new user (Admin only)")]
+        [SwaggerResponse(200, "User registered successfully")]
+        [SwaggerResponse(400, "User already exists")]
         public IActionResult Register([FromBody] RegisterDto dto)
         {
             if (_context.Users.Any(u => u.Email == dto.Email))

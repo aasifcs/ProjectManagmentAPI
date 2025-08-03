@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagmentAPI.Data;
 using ProjectManagmentAPI.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ProjectManagmentAPI.Controllers
 {
@@ -16,10 +17,14 @@ namespace ProjectManagmentAPI.Controllers
 
         [Authorize]
         [HttpGet]
+        [SwaggerOperation(Summary = "Get all projects")]
+        [ProducesResponseType(typeof(IEnumerable<Project>), 200)]
         public IActionResult GetAll() => Ok(_context.Projects.ToList());
 
         [Authorize(Roles = "Admin,ProjectManager")]
         [HttpPost]
+        [SwaggerOperation(Summary = "Create a new project")]
+        [ProducesResponseType(typeof(Project), 200)] 
         public IActionResult Create(Project project)
         {
             project.CreatedAt = DateTime.UtcNow;
@@ -30,6 +35,9 @@ namespace ProjectManagmentAPI.Controllers
 
         [Authorize(Roles = "Admin,ProjectManager")]
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Update a project by ID")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public IActionResult Update(int id, Project updated)
         {
             var project = _context.Projects.Find(id);
@@ -43,6 +51,9 @@ namespace ProjectManagmentAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Delete a project by ID (Admin only)")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public IActionResult Delete(int id)
         {
             var project = _context.Projects.Find(id);
